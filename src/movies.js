@@ -2,27 +2,27 @@ const testMovies = [
     {
       title: 'The Shawshank Redemption',
       year: 1994,
-      director: 'Frank Darabont',
-      duration: '2h 22min',
-      genre: ['Crime', 'Drama'],
       score: 9.3
     },
     {
       title: 'The Godfather',
       year: 1972,
-      director: 'Francis Ford Coppola',
-      duration: '2h',
-      genre: ['Crime', 'Drama'],
       score: 9.2
     },
     {
       title: 'The Godfather: Part II',
       year: 1974,
-      director: 'Francis Ford Coppola',
-      duration: '3h 22min',
-      genre: ['Crime', 'Drama'],
       score: 9
-    }]
+    },
+    {
+        title: 'The Godfather: Part III',
+        year: 1974,
+        score: 10
+      },
+      {
+        title: 'The Godfather: Part -5',
+        year: 1972,
+      }]
 // Iteration 1: All directors? - Get the array of all directors.
 // _Bonus_: It seems some of the directors had directed multiple movies so they will pop up multiple times in the array of directors.
 // How could you "clean" a bit this array and make it unified (without duplicates)?
@@ -72,8 +72,6 @@ function orderAlphabetically(moviesArray) {
 }
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(moviesArray) {
-    //duration.split(' ') => expected result either xh, xm or xm or xh
-    //parseInt(hours) * 60 parseInt(minutes)
     let formattedTime = moviesArray.map(movie => {
         let durationSplit = movie.duration.split(" ");
         console.log(durationSplit);
@@ -96,6 +94,34 @@ function bestYearAvg(moviesArray) {
     if (moviesArray.length === 0) {
         return null;
     }
-    console.log(`The best year was ${YEAR} with an average score of ${AVGSCOREFORTHATYEAR}`)
+    let sumScores = moviesArray.reduce((accumulator, currentMovie) => {
+        const {year, score} = currentMovie;
+        if (accumulator[year]) {
+            if(typeof score === "number"){
+                accumulator[year].sum += score;
+            }
+            accumulator[year].count += 1;
+        } else {
+            if(typeof score === "number"){
+                accumulator[year] = {sum: score, count: 1};
+            } else {
+                accumulator[year] = {sum: 0, count: 1};
+            }
+        }
+        return accumulator;
+    }, {})
+
+    const avgScores = Object.keys(sumScores).reduce((avgScore, year) => {
+        avgScore[year] = sumScores[year].sum / sumScores[year].count;
+        return avgScore;
+    }, {}) //we have array with year: avg, tried to work with some chat gpt solutions, ran out of time
+    //might finish another day
+
+    console.log(avgScores);
+    
+    
+    // create new array with year and average score for that year - sort by score and if equal by older year
+    //should probably round to 1 or 2 decimal places
+    //console.log(`The best year was ${YEAR} with an average score of ${AVGSCOREFORTHATYEAR}`)
 }
-bestYearAvg()
+bestYearAvg(testMovies);
